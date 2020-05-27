@@ -1,0 +1,34 @@
+version: "3.3"
+services:
+  db-mysql:
+    container_name: mysql5.7
+    image: mysql:5.7
+    env_file:
+      - "docker-compose_db-mysql.env"
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./var/mysql/data:/var/lib/mysql
+      - ./var/log/mysql:/var/log/mysql
+  gekko-api:
+    container_name: express
+    image: gekko-api
+    env_file:
+      - "docker-compose_gekko-api.env"
+    build:
+      context: "."
+      dockerfile: "gekko-api/Dockerfile"
+    ports:
+      - "3000:3000"
+  gekko-front:
+    container_name: nuxt
+    image: gekko-front
+    env_file:
+      - "docker-compose_gekko-front.env"
+    build:
+      context: "."
+      dockerfile: "gekko-front/Dockerfile"
+    ports:
+      - "5000:5000"
